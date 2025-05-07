@@ -1,25 +1,24 @@
-﻿using System.Reflection;
-using JetLogistics.Common.Common;
-using JetLogistics.Common.Extensions;
-using JetLogistics.Consignee.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
+using JetLogistics.Common.Extensions;
+using System.Reflection;
+using JetLogistics.Common.Common;
+using JetLogistics.Booking.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
+
+
+
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Identity API", Version = "v1" });
 
-    // ✅ Add JWT Authentication to Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -58,10 +57,10 @@ builder.Services.AddAuthentication("Bearer")
         {
             ValidateIssuer = true,
             ValidIssuer = configuration["JWT:Issuer"],
-            ValidateAudience = true, 
-            ValidAudience =  "consignee_audience",
+            ValidateAudience = true,
+            ValidAudience = "booking_audience",
             RequireExpirationTime = true,
-            ValidateLifetime = true, 
+            ValidateLifetime = true,
             ClockSkew = TimeSpan.FromMinutes(int.TryParse(configuration["JWT:ClockSkew"], out var skew) ? skew : 2),
 
         };
@@ -86,7 +85,7 @@ builder.Services.AddAuthentication("Bearer")
 
 // Register 
 builder.Services.AddDispatcher();
-builder.Services.AddScoped<IConsigneeService, ConsigneeService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 
 // Auto-register all ICommandHandler and IQueryHandler
@@ -105,33 +104,13 @@ builder.Services.Scan(scan => scan
     .WithScopedLifetime()
 );
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(opt =>
-    {
-        opt.RouteTemplate = "openapi/{documentName}.json";
-    });
-
-
-
-    app.MapScalarApiReference(options =>
-    {
-        options
-        .WithTitle("JET LOGISTICS CONSIGNEE API")
-        .WithSidebar(true)
-        .WithTheme(ScalarTheme.Mars)
-        .WithDarkModeToggle(true);
-        options.AddHttpAuthentication("Bearer", bearer =>
-        {
-            bearer.Token = "your-bearer-token";
-        });
-    });
-
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -139,6 +118,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 app.Run();

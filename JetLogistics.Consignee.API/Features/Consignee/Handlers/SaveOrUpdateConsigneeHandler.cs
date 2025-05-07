@@ -1,4 +1,4 @@
-﻿using JetLogistics.Consignee.API.Common;
+﻿using JetLogistics.Common.Common;
 using JetLogistics.Consignee.API.Features.Consignee.Commands;
 using JetLogistics.Consignee.API.Models;
 using JetLogistics.Consignee.API.Services;

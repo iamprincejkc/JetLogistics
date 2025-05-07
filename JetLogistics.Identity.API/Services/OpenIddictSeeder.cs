@@ -36,14 +36,13 @@ namespace JetLogistics.Identity.API.Services
             }
 
             // Seed clients
-            await CreateClientAsync(appManager, "clientid", "clientsecret", new[] { "sc1", "sc2", "sc3","offline_access", "consignee_api" }, passwordGrant: true);
-            await CreateClientAsync(appManager, "clientid2", "clientsecret2", new[] { "sc1", "sc2", "sc3", "offline_access" }, passwordGrant: true);
+            await CreateClientAsync(appManager, "clientid", "clientsecret", new[] { "offline_access", "consignee_api" }, passwordGrant: true);
+            await CreateClientAsync(appManager, "clientid2", "clientsecret2", new[] { "offline_access","booking_api" }, passwordGrant: true);
+            await CreateClientAsync(appManager, "clientid0", "clientsecret0", new[] { "offline_access", "consignee_api", "booking_api" }, passwordGrant: true);
 
             // Seed scopes
-            await CreateScopeAsync(scopeManager, "sc1", "Access to Gateway API", new[] { "gateway" });
-            await CreateScopeAsync(scopeManager, "sc2", "Access to Api 1", new[] {  "gateway" });
-            await CreateScopeAsync(scopeManager, "sc3", "Access to Api 2", new[] {  "gateway" });
-            await CreateScopeAsync(scopeManager, "consignee_api", "Access to Consignee", new[] { "consignee_audience", "gateway" });
+            await CreateScopeAsync(scopeManager, "consignee_api", "Access to Consignee", new[] { "consignee_audience", "gateway" ,"booking_audience" });
+            await CreateScopeAsync(scopeManager, "booking_api", "Access to Consignee", new[] { "consignee_audience", "gateway", "booking_audience" });
         }
 
         private static async Task CreateClientAsync(IOpenIddictApplicationManager manager, string clientId, string secret, string[] scopes, bool passwordGrant)

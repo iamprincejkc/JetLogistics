@@ -11,7 +11,13 @@
     <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Scrutor" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Booking\Handlers\" />
+    <Folder Include="Features\Booking\Queries\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>

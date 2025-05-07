@@ -75,6 +75,8 @@ namespace JetLogistics.Identity.API.Controllers
             var audiences = clientId switch
             {
                 "clientid" => new[] { "consignee_audience", "gateway" },
+                "clientid2" => new[] { "booking_audience", "gateway" },
+                "clientid0" => new[] { "consignee_audience", "booking_audience", "gateway" },
                 _ => new[] { "gateway" }
             };
 
@@ -82,8 +84,17 @@ namespace JetLogistics.Identity.API.Controllers
 
             // ✅ Set proper audiences, scopes, and resources
             principal.SetAudiences(audiences);
-            principal.SetResources(audiences); 
-            principal.SetScopes(Scopes.OfflineAccess,"consignee_api","booking_api");
+            principal.SetResources(audiences);
+
+            var scopes = clientId switch
+            {
+                "clientid" => new[] { Scopes.OfflineAccess,"consignee_api" },
+                "clientid2" => new[] { Scopes.OfflineAccess, "booking_api" },
+                "clientid0" => new[] { Scopes.OfflineAccess, "booking_api", "consignee_api" },
+                _ => new[] { "gateway" }
+            };
+
+            principal.SetScopes(scopes);
 
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }

@@ -1,4 +1,5 @@
-﻿namespace JetLogistics.Consignee.API.Common
+﻿
+namespace JetLogistics.Common.Common
 {
     public interface ICommandHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>

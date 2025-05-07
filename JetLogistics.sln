@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetLogistics.Gateway", "Jet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetLogistics.Consignee.API", "JetLogistics.Consignee.API\JetLogistics.Consignee.API.csproj", "{A0C191AE-FC6B-410B-9470-38685E6F1FE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetLogistics.Booking.API", "JetLogistics.Booking.API\JetLogistics.Booking.API.csproj", "{71BFA0F7-6704-4579-B994-A04B2FD5883F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetLogistics.Common", "JetLogistics.Common\JetLogistics.Common.csproj", "{E9B37F4B-6CEB-4AF0-BFAD-F7A55ECE6AE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{A0C191AE-FC6B-410B-9470-38685E6F1FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0C191AE-FC6B-410B-9470-38685E6F1FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0C191AE-FC6B-410B-9470-38685E6F1FE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BFA0F7-6704-4579-B994-A04B2FD5883F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BFA0F7-6704-4579-B994-A04B2FD5883F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BFA0F7-6704-4579-B994-A04B2FD5883F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BFA0F7-6704-4579-B994-A04B2FD5883F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B37F4B-6CEB-4AF0-BFAD-F7A55ECE6AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B37F4B-6CEB-4AF0-BFAD-F7A55ECE6AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B37F4B-6CEB-4AF0-BFAD-F7A55ECE6AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B37F4B-6CEB-4AF0-BFAD-F7A55ECE6AE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

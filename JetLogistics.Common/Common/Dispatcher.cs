@@ -1,5 +1,5 @@
-﻿
-namespace JetLogistics.Consignee.API.Common
+﻿using Microsoft.Extensions.DependencyInjection;
+namespace JetLogistics.Common.Common
 {
     public class Dispatcher : IDispatcher
     {
