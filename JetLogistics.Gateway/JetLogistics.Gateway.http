@@ -1,0 +1,6 @@
+@JetLogistics.Gateway_HostAddress = http://localhost:5219
+
+GET {{JetLogistics.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
