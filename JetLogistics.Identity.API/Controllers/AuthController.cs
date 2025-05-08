@@ -8,6 +8,7 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JetLogistics.Identity.API.Controllers
 {
@@ -20,6 +21,13 @@ namespace JetLogistics.Identity.API.Controllers
         public AuthorizationController(IdentityDbContext db)
         {
             _db = db;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/health")]
+        public async Task<ActionResult> Health(int id)
+        {
+            return Ok("Identity API");
         }
 
         [HttpPost("token"), IgnoreAntiforgeryToken]
@@ -39,7 +47,7 @@ namespace JetLogistics.Identity.API.Controllers
                 return await HandlePasswordGrantAsync(request);
 
             if (request.IsRefreshTokenGrantType())
-                return await HandleRefreshTokenGrantAsync();
+                return await HandleRefreshTokenGrantAsync(request);
 
             return BadRequest(new
             {
@@ -101,17 +109,43 @@ namespace JetLogistics.Identity.API.Controllers
 
 
 
-        private async Task<IActionResult> HandleRefreshTokenGrantAsync()
+
+        private async Task<IActionResult> HandleRefreshTokenGrantAsync(OpenIddictRequest request)
         {
+
+            var clientId = request.ClientId;
+            if (string.IsNullOrWhiteSpace(clientId))
+            {
+                return BadRequest(new
+                {
+                    error = "invalid_request",
+                    error_description = "Missing client_id in the token request."
+                });
+            }
+
+            var audiences = clientId switch
+            {
+                "clientid" => new[] { "consignee_audience", "gateway" },
+                "clientid2" => new[] { "booking_audience", "gateway" },
+                "clientid0" => new[] { "consignee_audience", "booking_audience", "gateway" },
+                _ => new[] { "gateway" }
+            };
+
+
             var principal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
             if (principal == null)
                 return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
+
             var identity = new ClaimsIdentity(principal.Claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             var newPrincipal = new ClaimsPrincipal(identity);
 
+
+            newPrincipal.SetAudiences(audiences);
+            newPrincipal.SetResources(audiences);
+
             newPrincipal.SetScopes(principal.GetScopes());
-            newPrincipal.SetResources("consignee_audience");
+
 
             return SignIn(newPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }

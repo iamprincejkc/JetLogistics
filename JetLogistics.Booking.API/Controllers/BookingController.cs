@@ -9,11 +9,10 @@ namespace JetLogistics.Booking.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-
         [HttpGet("origin/ports")]
         public async Task<IActionResult> GetAllOriginPort()
         {
-            return Ok();
+            return Ok(new { message="Success"});
         }
 
     }

@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:44933",
+      "applicationUrl": "https://localhost:7260/internal-health",
       "sslPort": 44382
     }
   },
@@ -23,7 +23,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "healthcheck-ui",
       "applicationUrl": "https://localhost:7260;http://localhost:5219",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

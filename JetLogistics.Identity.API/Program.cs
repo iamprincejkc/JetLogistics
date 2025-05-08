@@ -1,22 +1,19 @@
 ﻿using System.Reflection;
+using HealthChecks.UI.Client;
 using JetLogistics.Identity.API.Common;
 using JetLogistics.Identity.API.DataAccess;
 using JetLogistics.Identity.API.Services;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using OpenIddict.Abstractions;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Identity API", Version = "v1" });
-
-    // ✅ Add JWT Authentication to Swagger
+    c.SwaggerDoc("v1", new() { Title = "JET LOGISTICS IDENTITY API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -26,7 +23,6 @@ builder.Services.AddSwaggerGen(c =>
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Description = "Enter 'Bearer' followed by your token. Example: Bearer {token}"
     });
-
     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
     {
         {
@@ -43,9 +39,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-
-
 builder.Services.AddDbContext<IdentityDbContext>(options =>
 {
     options.UseInMemoryDatabase("IdentityDb");
@@ -53,34 +46,23 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 });
 
 builder.Services.AddOpenIddict()
-    .AddCore(options =>
-    {
-        options.UseEntityFrameworkCore()
-               .UseDbContext<IdentityDbContext>();
-    })
+    .AddCore(options => options.UseEntityFrameworkCore().UseDbContext<IdentityDbContext>())
     .AddServer(options =>
     {
         options.AllowPasswordFlow();
         options.AllowRefreshTokenFlow();
-
         options.SetTokenEndpointUris("/connect/token");
-
         options.AcceptAnonymousClients();
-
         options.AddDevelopmentEncryptionCertificate();
         options.DisableAccessTokenEncryption();
         options.AddDevelopmentSigningCertificate();
-
-        options.UseAspNetCore()
-               .EnableTokenEndpointPassthrough();
-
+        options.UseAspNetCore().EnableTokenEndpointPassthrough();
     })
     .AddValidation(options =>
     {
         options.UseLocalServer();
         options.UseAspNetCore();
     });
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -92,56 +74,52 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireGatewayScope", policy =>
     {
         policy.RequireAssertion(context =>
-            context.User.HasClaim(c =>
-                c.Type == "scope" && c.Value.Split(' ').Contains("sc1")));
+            context.User.HasClaim(c => c.Type == "scope" && c.Value.Split(' ').Contains("sc1")));
     });
 });
 
+builder.Services.AddOpenIddict().AddValidation(options =>
+{
+    options.UseLocalServer();
+    options.UseAspNetCore();
+});
 
-builder.Services.AddOpenIddict()
-    .AddValidation(options =>
-    {
-        options.UseLocalServer();
-        options.UseAspNetCore();
-    });
-
-
-// Register CQRS Dispatcher
 builder.Services.AddScoped<IDispatcher, Dispatcher>();
 
-// Auto-register command handlers
 builder.Services.Scan(scan => scan
     .FromAssemblies(Assembly.GetExecutingAssembly())
     .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
     .AsImplementedInterfaces()
-    .WithScopedLifetime()
-);
-
-// Auto-register query handlers
-builder.Services.Scan(scan => scan
+    .WithScopedLifetime())
+    
+    .Scan(scan => scan
     .FromAssemblies(Assembly.GetExecutingAssembly())
     .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
     .AsImplementedInterfaces()
-    .WithScopedLifetime()
-);
+    .WithScopedLifetime());
 
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(opt => { opt.RouteTemplate = "openapi/{documentName}.json"; });
+    app.MapScalarApiReference(options =>
+    {
+        options.WithSidebar(true).WithTheme(ScalarTheme.Mars).WithDarkModeToggle(true);
+        options.AddHttpAuthentication("Bearer", bearer => { bearer.Token = "your-bearer-token"; });
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 await OpenIddictSeeder.SeedAsync(app.Services);
-
 app.Run();

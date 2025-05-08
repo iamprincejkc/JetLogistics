@@ -20,16 +20,13 @@ namespace JetLogistics.Consignee.API.Controllers
             _dispatcher = dispatcher;
         }
 
-        /// <summary>
-        /// Create or update a consignee.
-        /// </summary>
         [HttpPost("save-update")]
         public async Task<IActionResult> SaveUpdateConsignee([FromBody] ConsigneeModel consignee)
         {
             var result = await _dispatcher.DispatchAsync(new SaveOrUpdateConsigneeCommand(consignee));
             return Ok(result);
         }
-        [AllowAnonymous]
+
         [HttpGet("all/{id}")]
         public async Task<ActionResult<DbReturnModel>> GetAllCustomerConsignees(int id)
         {
@@ -37,9 +34,6 @@ namespace JetLogistics.Consignee.API.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Gets paginated customer consignees by search parameters.
-        /// </summary>
         [HttpPost("")]
         public async Task<ActionResult<DbReturnModel>> GetCustomerConsigneesNew([FromBody] ConsigneeRequestParamModel param)
         {

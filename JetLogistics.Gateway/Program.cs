@@ -1,5 +1,9 @@
 using System.Security.Claims;
+using HealthChecks.UI.Client;
+using HealthChecks.UI.Configuration;
 using JetLogistics.Gateway.Extensions;
+using JetLogistics.Gateway.HealthCheck;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -15,7 +19,10 @@ builder.Services.AddSwaggerGen();
 
 
 
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Configuration
+    .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+
+
 
 
 
@@ -38,10 +45,34 @@ builder.Services.AddAuthentication("Bearer")
 
     });
 
+
 builder.Services.AddOcelot();
 
 
+builder.Services.ConfigureHealthChecks(builder.Configuration);
+
+
 var app = builder.Build();
+
+
+
+// JSON endpoint for health check results
+app.MapWhen(context => context.Request.Path.StartsWithSegments("/internal-health"), subApp =>
+{
+    subApp.UseHealthChecks("/internal-health", new HealthCheckOptions
+    {
+        Predicate = _ => true,
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
+});
+
+
+// HealthChecks UI (browser-friendly dashboard)
+app.UseHealthChecksUI(options =>
+{
+    options.UIPath = "/healthcheck-ui"; // DIFFERENT from above
+    options.AddCustomStylesheet("./HealthCheck/customhealth.css");
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -53,6 +84,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -61,10 +94,11 @@ app.UseAuthorization();
 //custom middleware
 app.UseScopeClaimSplitter();
 
-
 app.UseOcelot().Wait();
 
 app.MapControllers();
+
+
 
 
 app.Run();

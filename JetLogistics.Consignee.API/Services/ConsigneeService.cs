@@ -23,31 +23,29 @@ namespace JetLogistics.Consignee.API.Services
         public Task<(object[] Data, int TotalCount)> GetPagedConsigneesAsync(ConsigneeRequestParamModel param)
         {
             var testList = new List<ConsigneeResultModel>
-    {
-        new ConsigneeResultModel
-        {
-            Id = 1,
-            IdCustomer = param.IdCustomer,
-            Name = "Test Consignee 1",
-            Country = "Japan",
-            Currency = "Yen"
-        },
-        new ConsigneeResultModel
-        {
-            Id = 2,
-            IdCustomer = param.IdCustomer,
-            Name = "Test Consignee 2",
-            Country = "USA",
-            Currency = "USD"
-        }
-    };
+            {
+                new ConsigneeResultModel
+                {
+                    Id = 1,
+                    IdCustomer = param.IdCustomer,
+                    Name = "Test Consignee 1",
+                    Country = "Japan",
+                    Currency = "Yen"
+                },
+                new ConsigneeResultModel
+                {
+                    Id = 2,
+                    IdCustomer = param.IdCustomer,
+                    Name = "Test Consignee 2",
+                    Country = "USA",
+                    Currency = "USD"
+                }
+            };
 
             var total = testList.Count;
             var paged = testList.Skip((param.CurrentPage - 1) * param.PageSize).Take(param.PageSize).Cast<object>().ToArray();
 
             return Task.FromResult((paged, total));
         }
-
-
     }
 }

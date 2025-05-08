@@ -7,6 +7,9 @@ namespace JetLogistics.Consignee.API.Features.Consignee.Queries
     {
         public int CustomerId { get; }
 
+        /// <summary>
+        /// Gets customer by customer id.
+        /// </summary>
         public GetAllCustomerConsigneesQuery(int customerId)
         {
             CustomerId = customerId;
