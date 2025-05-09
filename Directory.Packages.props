@@ -23,6 +23,10 @@
     <PackageVersion Include="OpenIddict.Validation.AspNetCore" Version="6.2.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.2.7" />
     <PackageVersion Include="Scrutor" Version="6.0.1" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 </Project>

@@ -6,5 +6,5 @@ namespace JetLogistics.Consignee.API.Features.Consignee.Commands
     /// <summary>
     /// Create or update a consignee.
     /// </summary>
-    public record SaveOrUpdateConsigneeCommand(ConsigneeModel Consignee) : ICommand<string>;
+    public record SaveOrUpdateConsigneeCommand(ConsigneeModel Consignee) : ICommand<SaveOrUpdateConsigneeCommand>;
 }

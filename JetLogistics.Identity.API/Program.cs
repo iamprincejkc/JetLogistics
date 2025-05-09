@@ -107,6 +107,12 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(opt => { opt.RouteTemplate = "openapi/{documentName}.json"; });
@@ -116,10 +122,6 @@ if (app.Environment.IsDevelopment())
         options.AddHttpAuthentication("Bearer", bearer => { bearer.Token = "your-bearer-token"; });
     });
 }
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
 
 await OpenIddictSeeder.SeedAsync(app.Services);
 app.Run();

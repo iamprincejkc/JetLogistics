@@ -4,8 +4,8 @@ using JetLogistics.Consignee.API.Models;
 using JetLogistics.Consignee.API.Services;
 
 namespace JetLogistics.Consignee.API.Features.Consignee.Handlers
-{
-    public class SaveOrUpdateConsigneeHandler : ICommandHandler<SaveOrUpdateConsigneeCommand, string>
+{   
+    public class SaveOrUpdateConsigneeHandler : ICommandHandler<SaveOrUpdateConsigneeCommand, SaveOrUpdateConsigneeCommand>
     {
         private readonly IConsigneeService _service;
 
@@ -14,10 +14,10 @@ namespace JetLogistics.Consignee.API.Features.Consignee.Handlers
             _service = service;
         }
 
-        public async Task<string> HandleAsync(SaveOrUpdateConsigneeCommand command)
+        public async Task<SaveOrUpdateConsigneeCommand> HandleAsync(SaveOrUpdateConsigneeCommand command)
         {
             await _service.SaveOrUpdateAsync(command.Consignee);
-            return "Saved or updated successfully.";
+            return command;
         }
     }
 }

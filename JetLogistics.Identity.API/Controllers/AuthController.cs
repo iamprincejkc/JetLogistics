@@ -9,6 +9,7 @@ using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace JetLogistics.Identity.API.Controllers
 {
@@ -30,7 +31,7 @@ namespace JetLogistics.Identity.API.Controllers
             return Ok("Identity API");
         }
 
-        [HttpPost("token"), IgnoreAntiforgeryToken]
+        [HttpPost("token"), IgnoreAntiforgeryToken,]
         public async Task<IActionResult> Exchange()
         {
             var request = HttpContext.GetOpenIddictServerRequest();

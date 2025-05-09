@@ -7,8 +7,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Error()
+    .WriteTo.File(new CompactJsonFormatter(), "Logs/error-log-.json",
+    rollingInterval: RollingInterval.Day,
+    retainedFileCountLimit:7)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -73,7 +85,7 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddDispatcher();
-builder.Services.AddScoped<IConsigneeService, ConsigneeService>();
+builder.Services.AddSingleton<IConsigneeService, ConsigneeService>();
 
 builder.Services.Scan(scan => scan
     .FromAssemblies(Assembly.GetExecutingAssembly())
